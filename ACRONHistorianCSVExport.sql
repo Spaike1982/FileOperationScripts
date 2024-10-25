@@ -8,8 +8,8 @@
 use	DevTestDB
 
 -- Input parmaterere:
-DECLARE @Starttime varchar(30) = '2019-01-01 00:00:00'
-DECLARE @Endtime varchar(30) = '2020-01-01 00:00:00' --'2024-04-15 14:45:00'
+DECLARE @Starttime varchar(30) = '2010-01-01 00:00:00'
+DECLARE @Endtime varchar(30) = '2025-01-01 00:00:00' --'2024-04-15 14:45:00'
 DECLARE @TimeInterval INT = 10; -- Minutter med data som skal hentes ut per fil
 DECLARE @dir VARCHAR(50) = 'C:\ACRON_Export\CSVFiles'; -- csv filer
 DECLARE @Header1 NVARCHAR(20) = '[Data]'
@@ -28,7 +28,7 @@ DECLARE @cnt BIGINT;
 -- Hindrer ekstra resultat som spiser opp minnet.
 SET NOCOUNT ON; 
 
-set @cnt = 157717 -- Fortsette der det stoppet sist
+set @cnt = 0 -- Fortsette der det stoppet sist
 
 -- Sette rett encoding ANSI før skriving til filer
 SET @cmd = 'chcp 1252';
@@ -77,7 +77,7 @@ BEGIN
   EXEC sp_executesql @sql;
 
   -- Formater CSV-data
-  SET @fileName = 'dataset_' + convert(varchar, @cnt) + '.csv';
+   SET @fileName = 'dataset_' + FORMAT(@cnt, 'D8') + '.csv'; -- Format with leading zeros
 
   SET @cmd = 'bcp "SELECT variable, timestamp, numdata FROM DevTestDB.dbo.csvData" queryout "' + @dir + '\data.csv" -c -T -t , -S ' + @@servername;
   EXEC master..xp_cmdshell @cmd, NO_OUTPUT;
